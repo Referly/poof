@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.homepage    =
       'https://github.com/Referly/poof'
+  s.add_runtime_dependency "activerecord", ">= 4.1.5"
   s.add_development_dependency "rake", "~> 10.3"
   s.add_development_dependency "simplecov", "~> 0.10"
   s.add_development_dependency "yard", "~> 0.8"
