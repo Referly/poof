@@ -1,0 +1,5 @@
+require_relative '../simplecov_custom_profiles'
+SimpleCov.start 'poof'
+require 'rspec/support/spec'
+require 'byebug'
+require 'poof'
