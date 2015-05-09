@@ -74,56 +74,27 @@ module Poof
       e.send attribute_name
     end
 
+    def self.configure
+      yield(configuration) if block_given?
+    end
+
     # This is the general teardown method, it removes any check_orm's that have been applied
     # to any class for which the container has generated instances, and then it attempts to delete
     # (using hard deletes when possible) all of the instances it created
     def self.cleanup
       @container ||= Array.new
       @container.each do |dependency|
-        disable_check_orm(dependency.class)
+        @configuration.callback_buster(dependency.class)
         teardown_method = :really_destroy! if dependency.respond_to? :really_destroy!
         teardown_method ||= :destroy!
         dependency.send(teardown_method)
       end
       @hit_list ||= Array.new
       @hit_list.each do |trash|
-        disable_check_orm(trash.class)
+        @configuration.callback_buster(trash.class)
         teardown_method = :really_destroy! if trash.respond_to? :really_destroy!
         teardown_method ||= :destroy!
         trash.send(teardown_method)
-      end
-    end
-
-    # Selectively targets check_orm_xxx callbacks to be disabled (skipped) in the callback chains
-    #
-    # @param klasses [Class, Symbol, Array<Class, Symbol>] A Class, Symbol representing a factory_girl factory, or an array Classes or Symbols
-    # @param events_to_disable [Symbol, Array] A symbol or array of Symbols that define which kind of callbacks to disable
-    def disable_check_orm(klasses, events_to_disable = [:create, :update, :destroy])
-      if klasses.is_a? Array
-        klasses.map { |klass| disable_check_orm klass, events_to_disable }
-      else
-        klass = klasses
-        if events_to_disable.is_a? Array
-          events_to_disable.map { |event| disable_check_orm klass, event }
-        else
-          event_to_disable = events_to_disable
-          # Allow the user to pass a symbol instead of a class and instantiate it using the factory
-          # might want to switch to using .new instead, but then you have to figure out how to locate
-          # the klasses modularized name from just a symbol representing the class
-          if klass.is_a? Symbol
-            klass = build(klass).class
-          end
-          # The name of the actual callback method for destroy is check_orm_delete/check_orm_delete_derived, so need to attach properly
-          callback_suffix = :delete if event_to_disable == :destroy
-          callback_suffix ||= event_to_disable
-          # Get the array of registered check_orm_xxx callbacks from the main authorizer on klass
-          registered_check_orm_callbacks = klass.registered_check_orm_callbacks if klass.respond_to? :registered_check_orm_callbacks
-          registered_check_orm_callbacks ||= []
-          # callbacks_to_skip refers to which callbacks should get passed to the skip_callback method (these are the callbacks that should be effectively disabled)
-          callbacks_to_skip = registered_check_orm_callbacks.select { |cb| cb.to_s.include? callback_suffix.to_s }
-          callbacks_to_skip ||= []
-          callbacks_to_skip.map { |cb| klass.skip_callback(event_to_disable, :before, cb) }
-        end
       end
     end
 
@@ -132,6 +103,15 @@ module Poof
       alias_method :restart, :cleanup
       alias_method :new_context, :cleanup
       alias_method :end, :cleanup
+    end
+
+  private
+    def self.configuration
+      if @configuration.nil?
+        @configuration = OpenStruct.new
+        @configuration.callback_buster = Proc.new { |klass| }
+      end
+      @configuration
     end
   end
 end
