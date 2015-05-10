@@ -19,6 +19,10 @@ Then in your example
 ```ruby
 describe 'speed limit' do
 
+    before(:all) { Poof.start }
+
+    after(:all) { Poof.end }
+
     subject { road.speed_limit }
 
     context 'when on the highway' do
@@ -40,3 +44,5 @@ describe 'speed limit' do
     end
 end
 ```
+
+That's it, the records created for the test will be cleaned up for you automatically.
