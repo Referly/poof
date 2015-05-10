@@ -84,14 +84,14 @@ module Poof
     def self.cleanup
       @container ||= Array.new
       @container.each do |dependency|
-        @configuration.callback_buster(dependency.class)
+        configuration.callback_buster.call(dependency.class)
         teardown_method = :really_destroy! if dependency.respond_to? :really_destroy!
         teardown_method ||= :destroy!
         dependency.send(teardown_method)
       end
       @hit_list ||= Array.new
       @hit_list.each do |trash|
-        @configuration.callback_buster(trash.class)
+        configuration.callback_buster.call(trash.class)
         teardown_method = :really_destroy! if trash.respond_to? :really_destroy!
         teardown_method ||= :destroy!
         trash.send(teardown_method)
