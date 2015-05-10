@@ -4,3 +4,4 @@ gem 'yard'                                                    # MIT https://gith
 gem 'rspec'                                                   # MIT https://github.com/rspec/rspec/blob/master/License.txt
 gem 'byebug'
 gem "activerecord", ">= 4.1.5"                                # MIT https://github.com/rails/rails/blob/master/activerecord/MIT-LICENSE
+gem 'sqlite3'
