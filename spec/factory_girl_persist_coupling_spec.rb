@@ -7,7 +7,7 @@ describe Poof do
     before(:all) do
       FactoryGirl.define do
         factory :woman, class: TestModels::Person do
-          to_create { |she| Poof::Magic.poof!(she).save! }
+          to_create { |she| Poof.poof!(she).save! }
         end
       end
     end
@@ -15,9 +15,9 @@ describe Poof do
     before { TestModels::Person.delete_all }
 
     subject do
-      Poof.start
+      described_class.start
       FactoryGirl.create :woman
-      Poof.end
+      described_class.end
       TestModels::Person.count
     end
 

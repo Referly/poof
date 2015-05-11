@@ -1,23 +1,25 @@
 require 'active_support/callbacks'
 module Poof
-
   # This module is what should be included into the RSpec config so that poof! is available
   # within specs.
   module Syntax
     def poof!(entity)
       Magic.poof! entity
     end
-  end
 
-  def self.cleanup
-    Magic.cleanup
-  end
+    def cleanup
+      Magic.cleanup
+    end
 
-  class << self
     alias_method :start, :cleanup
     alias_method :restart, :cleanup
     alias_method :new_context, :cleanup
     alias_method :end, :cleanup
+  end
+  extend Syntax
+
+  def Poof.get(factory_name, attributes = {})
+    Magic.get factory_name, attributes
   end
 
   class Magic

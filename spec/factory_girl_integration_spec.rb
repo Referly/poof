@@ -7,7 +7,7 @@ FactoryGirl.define do
   end
 
   factory :dog, class: TestModels::Pet do
-    owner { Poof::Magic.get(:man) }
+    owner { Poof.get :man }
     name "Fido"
   end
 end
