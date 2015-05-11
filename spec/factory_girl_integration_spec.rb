@@ -25,9 +25,9 @@ describe 'building a pet with FactoryGirl' do
   before(:each) { TestModels::Person.delete_all }
 
   subject do
-    Poof::Magic.start
+    Poof.start
     FactoryGirl.build pet_factory
-    Poof::Magic.end
+    Poof.end
     TestModels::Person.count
   end
 

@@ -9,10 +9,10 @@ describe Poof::Magic do
     end
 
     it 'ensures a record will be removed from the database' do
-      Poof::Magic.start
+      Poof.start
       record = poof!(TestModels::Car.create! make: "Chevy", model: "Volt", year: Date.today.year)
       expect { TestModels::Car.find record.id }.to_not raise_error
-      Poof::Magic.end
+      Poof.end
       expect { TestModels::Car.find record.id }.to raise_error ActiveRecord::RecordNotFound
     end
   end

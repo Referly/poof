@@ -9,6 +9,17 @@ module Poof
     end
   end
 
+  def self.cleanup
+    Magic.cleanup
+  end
+
+  class << self
+    alias_method :start, :cleanup
+    alias_method :restart, :cleanup
+    alias_method :new_context, :cleanup
+    alias_method :end, :cleanup
+  end
+
   class Magic
     # This method acts provides a monotonically increasing integer value
     # As an example if you wanted to make ten companies and didn't want arbitrary names
@@ -96,13 +107,6 @@ module Poof
         teardown_method ||= :destroy!
         trash.send(teardown_method)
       end
-    end
-
-    class << self
-      alias_method :start, :cleanup
-      alias_method :restart, :cleanup
-      alias_method :new_context, :cleanup
-      alias_method :end, :cleanup
     end
 
   private
