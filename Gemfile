@@ -5,3 +5,4 @@ gem 'rspec'                                                   # MIT https://gith
 gem 'byebug'
 gem "activerecord", ">= 4.1.5"                                # MIT https://github.com/rails/rails/blob/master/activerecord/MIT-LICENSE
 gem 'sqlite3'
+gem 'factory_girl', "~> 4.0"                                  # MIT https://github.com/thoughtbot/factory_girl/blob/master/LICENSE
